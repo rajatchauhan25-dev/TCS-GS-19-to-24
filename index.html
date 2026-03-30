@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE SSC SCHOLARS | GS NEXUS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div style="display:flex; align-items:center;">
+            <button class="nav-btn" onclick="goHome()" style="border:none; padding-left:0; font-size:1.1rem;">
+                <i class="ri-home-4-fill" style="color:var(--primary)"></i>
+            </button>
+            <div style="margin-left:15px;">
+                <span class="brand-title">THE SSC SCHOLARS</span>
+                <span class="brand-sub">GS PYQs NEXUS</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button onclick="openSavedSection()" title="Saved Questions"><i class="ri-bookmark-3-fill"></i></button>
+            <button onclick="toggleTheme()" title="Toggle Theme"><i class="ri-moon-line" id="theme-icon"></i></button>
+        </div>
+    </nav>
+
+    <!-- HOME -->
+    <section id="view-home" class="view-section active">
+        <div class="container">
+            <div class="section-header">
+                <h2>Select Subject</h2>
+                <p style="color:var(--text-light); margin-top:5px;">TCS Pattern Questions (2019–2024)</p>
+            </div>
+            <div class="grid-container" id="subject-grid"></div>
+        </div>
+    </section>
+
+    <!-- TOPICS -->
+    <section id="view-topics" class="view-section">
+        <div class="container">
+            <div class="header-row">
+                <button class="back-btn" onclick="goHome()"><i class="ri-arrow-left-line"></i> Back</button>
+                <h2 id="selected-subject-title">Subject</h2>
+            </div>
+            <div class="list-container" id="topic-list"></div>
+        </div>
+    </section>
+
+    <!-- TESTS -->
+    <section id="view-tests" class="view-section">
+        <div class="container">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackToTopics()"><i class="ri-arrow-left-line"></i> Back</button>
+                <h2 id="selected-topic-title">Topic</h2>
+            </div>
+            <div class="grid-container-small" id="test-list"></div>
+        </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="view-quiz" class="view-section">
+        <div class="quiz-layout">
+            <div class="quiz-main">
+                <div class="quiz-toolbar">
+                    <div class="q-info">
+                        <span class="subject-tag" id="q-subject-badge">Topic</span>
+                        <span>Q.<span id="current-q-num">1</span>/<span id="total-q-num">15</span></span>
+                    </div>
+                    <div class="timer-box">
+                        <i class="ri-timer-line"></i>
+                        <span id="timer-display">07:00</span>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-text" id="question-content">Loading...</div>
+                    <div class="options-list" id="options-container"></div>
+                </div>
+
+                <div class="quiz-footer">
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-sec" onclick="clearResponse()"><i class="ri-eraser-line"></i> Clear</button>
+                        <button class="btn btn-mark" onclick="bookmarkCurrentQuestion()"><i class="ri-bookmark-line"></i> Mark</button>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-primary" onclick="saveAndNext()">Save & Next <i class="ri-arrow-right-line"></i></button>
+                        <button class="btn btn-success" onclick="submitTest()"><i class="ri-send-plane-fill"></i> Submit</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-sidebar" id="quiz-sidebar">
+                <div class="palette-info">
+                    <div class="p-legend"><span class="p-dot" style="background:var(--success)"></span> Answered</div>
+                    <div class="p-legend"><span class="p-dot" style="background:#e74c3c"></span> Visited</div>
+                    <div class="p-legend"><span class="p-dot" style="border:1px solid #ccc"></span> Skipped</div>
+                    <div class="p-legend"><span class="p-dot" style="background:var(--warning)"></span> Marked</div>
+                </div>
+                <div class="palette-grid" id="palette-grid"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESULT -->
+    <section id="view-result" class="view-section">
+        <div class="container">
+            <div class="result-page">
+                <div class="result-top">
+                    <div class="result-donut-wrap">
+                        <canvas id="score-donut" width="140" height="140"></canvas>
+                        <div class="donut-center-text">
+                            <div class="score-big" id="final-score">0</div>
+                            <div class="score-max" id="max-score">/ 0</div>
+                        </div>
+                    </div>
+                    <div class="result-summary">
+                        <h2 class="result-heading">Test Analysis</h2>
+                        <div class="result-stats-grid">
+                            <div class="stat-box correct-box">
+                                <span class="stat-val" id="stat-correct">0</span>
+                                <span class="stat-lbl">Correct</span>
+                            </div>
+                            <div class="stat-box wrong-box">
+                                <span class="stat-val" id="stat-wrong">0</span>
+                                <span class="stat-lbl">Wrong</span>
+                            </div>
+                            <div class="stat-box skip-box">
+                                <span class="stat-val" id="stat-skipped">0</span>
+                                <span class="stat-lbl">Skipped</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val" id="stat-accuracy">0%</span>
+                                <span class="stat-lbl">Accuracy</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val" id="stat-attempted">0</span>
+                                <span class="stat-lbl">Attempted</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val" id="stat-time">0m</span>
+                                <span class="stat-lbl">Time Taken</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button class="btn btn-primary btn-lg" onclick="startReview()"><i class="ri-file-list-3-line"></i> Review Solutions</button>
+                    <button class="btn btn-sec btn-lg" onclick="goHome()"><i class="ri-home-4-line"></i> Back Home</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVIEW -->
+    <section id="view-review" class="view-section">
+        <div class="container">
+            <div class="header-row">
+                <button class="back-btn" onclick="exitReview()"><i class="ri-arrow-left-line"></i> <span id="review-back-text">Back</span></button>
+                <h2 id="review-title">Solutions</h2>
+                <select id="saved-subject-filter" style="display:none; margin-left:auto;" onchange="filterSavedQuestions()"></select>
+            </div>
+            <div id="review-container"></div>
+        </div>
+    </section>
+
+    <script src="static_complete.js"></script>
+    <script src="history_complete.js"></script>
+    <script src="polity_complete.js"></script>
+    <script src="geography_complete.js"></script>
+    <script src="economics_complete.js"></script>
+    <script src="physics_complete.js"></script>
+    <script src="chemistry_complete.js"></script>
+    <script src="biology_complete.js"></script>
+    <script src="current_affairs_complete.js"></script>
+    <script src="logic.js"></script>
+</body>
+</html>
